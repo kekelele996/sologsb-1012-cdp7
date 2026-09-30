@@ -8,6 +8,16 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface AppRoot {
     }
+    interface MergeDialog {
+        /**
+          * @default false
+         */
+        "open": boolean;
+    }
+}
+export interface MergeDialogCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMergeDialogElement;
 }
 declare global {
     interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
@@ -16,15 +26,48 @@ declare global {
         prototype: HTMLAppRootElement;
         new (): HTMLAppRootElement;
     };
+    interface HTMLMergeDialogElementEventMap {
+        "close": any;
+        "applied": any;
+    }
+    interface HTMLMergeDialogElement extends Components.MergeDialog, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLMergeDialogElementEventMap>(type: K, listener: (this: HTMLMergeDialogElement, ev: MergeDialogCustomEvent<HTMLMergeDialogElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLMergeDialogElementEventMap>(type: K, listener: (this: HTMLMergeDialogElement, ev: MergeDialogCustomEvent<HTMLMergeDialogElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLMergeDialogElement: {
+        prototype: HTMLMergeDialogElement;
+        new (): HTMLMergeDialogElement;
+    };
     interface HTMLElementTagNameMap {
         "app-root": HTMLAppRootElement;
+        "merge-dialog": HTMLMergeDialogElement;
     }
 }
 declare namespace LocalJSX {
     interface AppRoot {
     }
+    interface MergeDialog {
+        "onApplied"?: (event: MergeDialogCustomEvent<any>) => void;
+        "onClose"?: (event: MergeDialogCustomEvent<any>) => void;
+        /**
+          * @default false
+         */
+        "open"?: boolean;
+    }
+
+    interface MergeDialogAttributes {
+        "open": boolean;
+    }
+
     interface IntrinsicElements {
         "app-root": AppRoot;
+        "merge-dialog": Omit<MergeDialog, keyof MergeDialogAttributes> & { [K in keyof MergeDialog & keyof MergeDialogAttributes]?: MergeDialog[K] } & { [K in keyof MergeDialog & keyof MergeDialogAttributes as `attr:${K}`]?: MergeDialogAttributes[K] } & { [K in keyof MergeDialog & keyof MergeDialogAttributes as `prop:${K}`]?: MergeDialog[K] };
     }
 }
 export { LocalJSX as JSX };
@@ -32,6 +75,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "app-root": LocalJSX.IntrinsicElements["app-root"] & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "merge-dialog": LocalJSX.IntrinsicElements["merge-dialog"] & JSXBase.HTMLAttributes<HTMLMergeDialogElement>;
         }
     }
 }

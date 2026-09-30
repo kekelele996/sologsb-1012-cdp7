@@ -1,0 +1,385 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.merge-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  background: rgba(10, 28, 24, 0.58);
+  overflow: auto;
+}
+
+.merge-modal {
+  width: min(960px, 100%);
+  background: #f4f7f6;
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(8, 22, 19, 0.35);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.merge-modal-head {
+  padding: 16px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #173c35;
+  color: #f4fffb;
+}
+
+.merge-modal-head h3 { margin: 0; font: 700 17px/1.2 Georgia, "Songti SC", serif; }
+
+.merge-close {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: transparent;
+  color: #e5f6f1;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.merge-tabs {
+  padding: 0 22px;
+  display: flex;
+  gap: 4px;
+  background: #fff;
+  border-bottom: 1px solid var(--studio-line, #d8e2df);
+}
+
+.merge-tabs button {
+  padding: 12px 4px;
+  margin-right: 22px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: #5b716b;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.merge-tabs button.active { border-bottom-color: #167064; color: #155f55; font-weight: 700; }
+.merge-tabs em {
+  font-style: normal;
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px; height: 18px;
+  margin-left: 5px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #f6d79f;
+  color: #674100;
+  font-size: 10px;
+}
+
+.merge-modal-body { padding: 20px 22px 24px; }
+
+/* 导入区 */
+.merge-hint {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-left: 3px solid #15827a;
+  border-radius: 0 8px 8px 0;
+  background: #eaf4f1;
+  color: #33534d;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.merge-hint strong { color: #155f55; }
+
+.merge-import-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.import-card {
+  position: relative;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1.5px dashed #9db8b1;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.import-card:hover { border-color: #15827a; background: #f2faf8; }
+.import-card input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+.import-side {
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  border-radius: 8px;
+  background: #173c35;
+  color: #f4fffb;
+  font-weight: 700;
+}
+.import-card:nth-child(2) .import-side { background: #8a3ffc; }
+
+.import-name input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #d8e2df;
+  border-radius: 6px;
+  font-size: 12px;
+}
+.import-file { color: #6b7f79; font-size: 11px; }
+
+.base-picker {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #33534d;
+}
+.base-picker select {
+  padding: 6px 8px;
+  border: 1px solid #c4d3cf;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 12px;
+}
+
+.merge-error {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid #f3c1bd;
+  border-radius: 8px;
+  background: #fdf1f0;
+  color: #a0261c;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.session-error { margin-bottom: 14px; }
+
+.merge-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.merge-actions.top { margin-top: 0; margin-bottom: 14px; justify-content: flex-start; }
+
+.merge-btn {
+  padding: 9px 18px;
+  border: 1px solid #b9c9c5;
+  border-radius: 8px;
+  background: #fff;
+  color: #2c4a44;
+  font-size: 13px;
+  cursor: pointer;
+}
+.merge-btn:hover { border-color: #15827a; color: #155f55; }
+.merge-btn.primary { background: #15827a; border-color: #15827a; color: #f4fffb; font-weight: 700; }
+.merge-btn.primary:hover { background: #126b64; }
+.merge-btn.primary:disabled { background: #b9c9c5; border-color: #b9c9c5; cursor: not-allowed; }
+.merge-btn.small { padding: 5px 12px; font-size: 11px; }
+.merge-btn.danger { color: #a0261c; }
+.merge-btn.danger:hover { border-color: #d92d20; }
+
+/* 会话 */
+.session-head {
+  margin-bottom: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.back-btn {
+  padding: 6px 12px;
+  border: 1px solid #c4d3cf;
+  border-radius: 6px;
+  background: #fff;
+  color: #33534d;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.session-meta { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: #5b716b; }
+.session-meta strong { font-size: 14px; color: #173c35; }
+
+.session-body { display: flex; flex-direction: column; }
+
+/* 改动清单 */
+.merge-changes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.changes-column {
+  padding: 12px;
+  border: 1px solid #d8e2df;
+  border-radius: 10px;
+  background: #fff;
+  min-width: 0;
+}
+.changes-column h4 {
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eef2f1;
+  font-size: 13px;
+  color: #173c35;
+}
+.changes-column h4 small { margin-left: 6px; color: #8aa09a; font-size: 10px; font-weight: 400; }
+.changes-empty { margin: 0; color: #9db0aa; font-size: 11px; }
+
+.change-group {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border: 1px solid #e6ecea;
+  border-radius: 8px;
+  background: #fafcfb;
+}
+.change-group.action-added { border-color: #bfe3d5; background: #f1faf6; }
+.change-group.action-deleted { border-color: #f0c9c5; background: #fdf4f3; }
+
+.change-head { display: flex; align-items: center; gap: 8px; }
+.change-badge {
+  flex-shrink: 0;
+  padding: 1px 7px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  background: #eef2f1;
+  color: #5b716b;
+}
+.change-badge.action-added { background: #d3f0e4; color: #1c6b52; }
+.change-badge.action-deleted { background: #fbdfdc; color: #a0261c; }
+.change-scope { color: #8aa09a; font-size: 10px; }
+.change-title { font-size: 11px; color: #2c4a44; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.change-fields { margin: 6px 0 0; padding: 0; list-style: none; }
+.change-fields li {
+  padding: 3px 0;
+  display: flex;
+  gap: 6px;
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+.field-name { flex-shrink: 0; color: #5b716b; font-weight: 600; }
+.field-arrow { color: #a3b4af; }
+.field-new { color: #155f55; word-break: break-all; }
+.action-deleted .field-new { color: #a0261c; }
+
+/* 冲突区 */
+.merge-conflicts { margin-top: 16px; }
+.conflicts-summary {
+  margin-bottom: 12px;
+  padding: 9px 12px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #d8e2df;
+  font-size: 11px;
+  color: #5b716b;
+}
+.conflicts-summary strong { color: #173c35; font-size: 13px; }
+.conflicts-summary .has-pending { color: #a0261c; }
+.conflicts-summary .has-pending strong { color: #d92d20; }
+
+.all-clear {
+  padding: 18px;
+  border: 1px solid #aad7c8;
+  border-radius: 10px;
+  background: #effaf6;
+  color: #27705f;
+  font-size: 13px;
+  text-align: center;
+}
+
+.conflict-card {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 1px solid #e0c9a8;
+  border-left: 4px solid #dc9b26;
+  border-radius: 8px;
+  background: #fffdf8;
+}
+.conflict-card.delete-conflict { border-color: #e6c3bd; border-left-color: #d9534f; background: #fdf8f7; }
+.conflict-card.order-conflict { border-color: #c3d3e0; border-left-color: #4d8fb8; background: #f7fafc; }
+
+.conflict-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.conflict-head strong { font-size: 12.5px; color: #173c35; }
+.conflict-field { color: #8aa09a; font-size: 11px; }
+.conflict-kind {
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: #f6e7c3;
+  color: #8a5a00;
+  font-size: 10px;
+  font-weight: 700;
+}
+.conflict-kind.delete { background: #fbdfdc; color: #a0261c; }
+.conflict-kind.order { background: #dcebf6; color: #2b6a96; }
+
+.conflict-base { margin: 6px 0 8px; color: #8a7a55; font-size: 11px; }
+.delete-note { margin: 6px 0 8px; color: #7a4a44; font-size: 11px; line-height: 1.6; }
+
+.conflict-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.conflict-choices.two { grid-template-columns: 1fr 1fr; }
+.conflict-choices.three { grid-template-columns: 1fr 1fr 1fr; }
+
+.choice-card {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border: 1.5px solid #d8e2df;
+  border-radius: 8px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.choice-card:hover { border-color: #15827a; }
+.choice-card.selected { border-color: #15827a; background: #eaf6f2; box-shadow: 0 0 0 1px #15827a; }
+
+.choice-side { font-size: 11px; font-weight: 700; color: #155f55; }
+.choice-card:nth-of-type(2) .choice-side { color: #6d28d9; }
+.delete-conflict .choice-side { color: #a0261c; }
+.delete-conflict .choice-card:nth-of-type(2) .choice-side { color: #5b716b; }
+.order-conflict .choice-side { color: #2b6a96; }
+
+.choice-value { font-size: 11.5px; color: #2c4a44; line-height: 1.5; word-break: break-all; }
+.order-value { font-size: 10.5px; color: #5b716b; }
+.choice-pick { margin-top: 2px; font-size: 10.5px; color: #8aa09a; }
+.choice-card.selected .choice-pick { color: #15827a; font-weight: 700; }
+
+/* 记录列表 */
+.records-empty { color: #8aa09a; font-size: 12px; text-align: center; padding: 30px 0; }
+.record-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.record-item {
+  padding: 12px 14px;
+  border: 1px solid #d8e2df;
+  border-radius: 10px;
+  background: #fff;
+}
+.record-item.status-applied { border-color: #bfe3d5; }
+.record-item.status-failed { border-color: #f0c9c5; background: #fdf8f7; }
+
+.record-info { display: flex; flex-direction: column; gap: 3px; }
+.record-info strong { font-size: 13px; color: #173c35; }
+.record-info > span { font-size: 11px; color: #6b7f79; }
+.record-status { font-weight: 700; }
+.status-pending .record-status { color: #8a5a00; }
+.status-applied .record-status { color: #1c6b52; }
+.status-failed .record-status { color: #a0261c; }
+.record-reason { color: #a0261c; font-size: 11px; line-height: 1.6; }
+
+.record-actions { margin-top: 8px; display: flex; gap: 8px; }
+
+@media (max-width: 720px) {
+  .merge-import-grid, .merge-changes, .conflict-choices, .conflict-choices.three { grid-template-columns: 1fr; }
+}

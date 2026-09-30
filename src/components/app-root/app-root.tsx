@@ -31,6 +31,7 @@ export class AppRoot {
   @State() playProgress = 0;
   @State() offline = typeof navigator !== 'undefined' ? !navigator.onLine : false;
   @State() toast?: { color: string; message: string };
+  @State() mergeOpen = false;
   private past: CourseProject[] = [];
   private future: CourseProject[] = [];
   private playTimer?: number;
@@ -268,6 +269,36 @@ export class AppRoot {
     this.project = { ...this.project, status: 'draft', lastSavedAt: new Date().toISOString() };
     this.persist();
     if (showMessage) this.showToast('success', '草稿已保存在浏览器本地。');
+  }
+
+  private exportOfflineCopy(): void {
+    try {
+      const blob = new Blob([JSON.stringify(this.project, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `signcourse-copy-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '')}.json`;
+      anchor.click();
+      URL.revokeObjectURL(url);
+      this.showToast('success', '离线副本已导出，可交给另一位老师。');
+    } catch {
+      this.showToast('danger', '导出离线副本失败，请重试。');
+    }
+  }
+
+  private reloadAfterMerge(): void {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        this.project = JSON.parse(saved) as CourseProject;
+        this.past = [];
+        this.future = [];
+      }
+    } catch {
+      this.showToast('danger', '合并结果已保存在本机，但重新载入失败，请刷新页面。');
+      return;
+    }
+    this.showToast('success', '两份离线副本已合并为一门课，可继续编辑。');
   }
 
   private submitForReview(): void {
@@ -561,6 +592,8 @@ export class AppRoot {
                     : this.project.status === 'frozen'
                       ? <ion-button class="studio-button" onClick={() => this.reviseFrozen()}>创建修订版</ion-button>
                       : <ion-button color="primary" class="studio-button" onClick={() => this.submitForReview()}>提交复核</ion-button>}
+                <ion-button fill="clear" class="studio-button" onClick={() => this.exportOfflineCopy()}>导出副本</ion-button>
+                <ion-button fill="outline" class="studio-button" onClick={() => { this.mergeOpen = true; }}>合并副本</ion-button>
               </ion-buttons>
             </ion-toolbar>
           </ion-header>
@@ -617,6 +650,7 @@ export class AppRoot {
             </main>
           </ion-content>
           <ion-toast isOpen={Boolean(this.toast)} message={this.toast?.message} color={this.toast?.color} duration={3200} onDidDismiss={() => { this.toast = undefined; }} />
+          <merge-dialog open={this.mergeOpen} onClose={() => { this.mergeOpen = false; }} onApplied={() => this.reloadAfterMerge()} />
         </ion-app>
       </Host>
     );
