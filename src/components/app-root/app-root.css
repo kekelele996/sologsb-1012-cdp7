@@ -30,6 +30,34 @@ ion-app { background: var(--studio-canvas); }
 .connection-status { border: 0; background: transparent; cursor: pointer; display: flex; align-items: center; gap: 7px; margin-right: 8px; color: #d8eee7; font-size: 11px; }
 .connection-status span { width: 7px; height: 7px; border-radius: 50%; background: #68d391; box-shadow: 0 0 0 4px rgba(104,211,145,.12); }
 .connection-status.offline span { background: #f6ad55; box-shadow: 0 0 0 4px rgba(246,173,85,.13); }
+.merge-entry-button {
+  position: relative;
+  margin-right: 6px;
+  padding: 7px 13px;
+  border: 1px solid #7aa199;
+  border-radius: 8px;
+  background: rgba(216, 246, 234, .12);
+  color: #e5f6f1;
+  font-size: 11px;
+  cursor: pointer;
+}
+.merge-entry-button:hover { background: rgba(216, 246, 234, .22); }
+.merge-entry-button i {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #f04438;
+  color: #fff;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 700;
+}
 
 ion-content { --background: var(--studio-canvas); }
 .project-ribbon {

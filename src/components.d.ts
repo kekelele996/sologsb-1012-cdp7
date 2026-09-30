@@ -5,9 +5,24 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { CourseProject } from "./models";
+export { CourseProject } from "./models";
 export namespace Components {
     interface AppRoot {
     }
+    interface MergeCenter {
+        "activeSessionId"?: string;
+        /**
+          * 弹窗是否打开。
+          * @default false
+         */
+        "open": boolean;
+        "project": CourseProject;
+    }
+}
+export interface MergeCenterCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMergeCenterElement;
 }
 declare global {
     interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {
@@ -16,15 +31,52 @@ declare global {
         prototype: HTMLAppRootElement;
         new (): HTMLAppRootElement;
     };
+    interface HTMLMergeCenterElementEventMap {
+        "mergeClosed": any;
+        "applyMerged": { snapshot: unknown };
+    }
+    interface HTMLMergeCenterElement extends Components.MergeCenter, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLMergeCenterElementEventMap>(type: K, listener: (this: HTMLMergeCenterElement, ev: MergeCenterCustomEvent<HTMLMergeCenterElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLMergeCenterElementEventMap>(type: K, listener: (this: HTMLMergeCenterElement, ev: MergeCenterCustomEvent<HTMLMergeCenterElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLMergeCenterElement: {
+        prototype: HTMLMergeCenterElement;
+        new (): HTMLMergeCenterElement;
+    };
     interface HTMLElementTagNameMap {
         "app-root": HTMLAppRootElement;
+        "merge-center": HTMLMergeCenterElement;
     }
 }
 declare namespace LocalJSX {
     interface AppRoot {
     }
+    interface MergeCenter {
+        "activeSessionId"?: string;
+        "onApplyMerged"?: (event: MergeCenterCustomEvent<{ snapshot: unknown }>) => void;
+        "onMergeClosed"?: (event: MergeCenterCustomEvent<any>) => void;
+        /**
+          * 弹窗是否打开。
+          * @default false
+         */
+        "open"?: boolean;
+        "project": CourseProject;
+    }
+
+    interface MergeCenterAttributes {
+        "open": boolean;
+        "activeSessionId": string;
+    }
+
     interface IntrinsicElements {
         "app-root": AppRoot;
+        "merge-center": Omit<MergeCenter, keyof MergeCenterAttributes> & { [K in keyof MergeCenter & keyof MergeCenterAttributes]?: MergeCenter[K] } & { [K in keyof MergeCenter & keyof MergeCenterAttributes as `attr:${K}`]?: MergeCenterAttributes[K] } & { [K in keyof MergeCenter & keyof MergeCenterAttributes as `prop:${K}`]?: MergeCenter[K] };
     }
 }
 export { LocalJSX as JSX };
@@ -32,6 +84,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "app-root": LocalJSX.IntrinsicElements["app-root"] & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+            "merge-center": LocalJSX.IntrinsicElements["merge-center"] & JSXBase.HTMLAttributes<HTMLMergeCenterElement>;
         }
     }
 }

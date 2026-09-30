@@ -23,6 +23,7 @@
 - ion-buttons
 - ion-content
 - ion-toast
+- [merge-center](../merge-center)
 
 ### Graph
 ```mermaid
@@ -41,6 +42,7 @@ graph TD;
   app-root --> ion-buttons
   app-root --> ion-content
   app-root --> ion-toast
+  app-root --> merge-center
   ion-button --> ion-ripple-effect
   ion-input --> ion-icon
   ion-select --> ion-select-popover

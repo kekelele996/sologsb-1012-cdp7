@@ -15,6 +15,7 @@ import {
   type LessonStep,
   type ValidationCheck,
 } from '../../models';
+import { loadSessions } from '../../merge/merge-store';
 
 type PreviewSize = 'phone' | 'tablet';
 
@@ -31,6 +32,9 @@ export class AppRoot {
   @State() playProgress = 0;
   @State() offline = typeof navigator !== 'undefined' ? !navigator.onLine : false;
   @State() toast?: { color: string; message: string };
+  @State() mergeOpen = false;
+  @State() mergeSessionId?: string;
+  @State() pendingMergeCount = 0;
   private past: CourseProject[] = [];
   private future: CourseProject[] = [];
   private playTimer?: number;
@@ -42,6 +46,7 @@ export class AppRoot {
     } catch {
       this.project = createDemoProject();
     }
+    this.refreshPendingMergeCount();
   }
 
   disconnectedCallback(): void {
@@ -308,6 +313,50 @@ export class AppRoot {
     this.commit((draft) => ({ ...draft, status: 'draft' }), '已创建修订版，可继续编辑。');
   }
 
+  private refreshPendingMergeCount(): void {
+    this.pendingMergeCount = loadSessions().filter((session) => session.status === 'pending').length;
+  }
+
+  private openMergeCenter(): void {
+    this.mergeSessionId = undefined;
+    this.mergeOpen = true;
+  }
+
+  private closeMergeCenter(): void {
+    this.mergeOpen = false;
+    this.mergeSessionId = undefined;
+    this.refreshPendingMergeCount();
+  }
+
+  /** 装入合并结果或离线副本快照：保留冻结版本历史，作为新的草稿修订。 */
+  private applyMergedSnapshot(event: CustomEvent<{ snapshot: unknown }>): void {
+    const snapshot = event.detail.snapshot as Omit<CourseProject, 'frozenVersions'>;
+    if (!snapshot || !Array.isArray(snapshot.modules)) {
+      this.showToast('danger', '结果快照结构不完整，未装入编辑器。');
+      return;
+    }
+    const before = cloneProject(this.project);
+    // 选中项可能指向被裁决删除的模块/步骤，装入时回落到第一个可用项。
+    const selectedModule = snapshot.modules.find((module) => module.id === snapshot.selectedModuleId) ?? snapshot.modules[0];
+    const selectedStepId = selectedModule?.steps.some((step) => step.id === snapshot.selectedStepId)
+      ? snapshot.selectedStepId
+      : selectedModule?.steps[0]?.id ?? '';
+    const next: CourseProject = {
+      ...structuredClone(snapshot),
+      frozenVersions: this.project.frozenVersions,
+      status: 'draft',
+      selectedModuleId: selectedModule?.id ?? '',
+      selectedStepId,
+      revision: before.revision + 1,
+      lastSavedAt: new Date().toISOString(),
+    };
+    this.past = [...this.past, before].slice(-80);
+    this.future = [];
+    this.project = next;
+    this.persist();
+    this.showToast('success', '已装入合并课程（草稿），可继续检查后保存或提交复核。');
+  }
+
   private togglePlay(): void {
     if (this.playTimer) {
       window.clearInterval(this.playTimer);
@@ -551,6 +600,10 @@ export class AppRoot {
               <ion-buttons slot="start"><div class="logo-mark">手</div><div class="app-title"><strong>SignCourse Studio</strong><span>手语课程编排工具</span></div></ion-buttons>
               <ion-buttons slot="end" class="header-actions">
                 <button class={`connection-status ${this.offline ? 'offline' : ''}`} onClick={() => { this.offline = !this.offline; this.showToast(this.offline ? 'warning' : 'success', this.offline ? '已进入离线模拟，编辑继续保存在本机。' : '已恢复在线模拟，本地草稿保持同步。'); }}><span />{this.offline ? '离线编辑中（点击恢复）' : '本地自动保存（点击模拟离线）'}</button>
+                <button class="merge-entry-button" onClick={() => this.openMergeCenter()}>
+                  合并中心
+                  {this.pendingMergeCount > 0 && <i>{this.pendingMergeCount}</i>}
+                </button>
                 <ion-button fill="clear" class="studio-button" disabled={this.past.length === 0} onClick={() => this.undo()}>撤销</ion-button>
                 <ion-button fill="clear" class="studio-button" disabled={this.future.length === 0} onClick={() => this.redo()}>重做</ion-button>
                 <ion-button fill="outline" class="studio-button" onClick={() => this.saveDraft()}>保存草稿</ion-button>
@@ -617,6 +670,13 @@ export class AppRoot {
             </main>
           </ion-content>
           <ion-toast isOpen={Boolean(this.toast)} message={this.toast?.message} color={this.toast?.color} duration={3200} onDidDismiss={() => { this.toast = undefined; }} />
+          <merge-center
+            open={this.mergeOpen}
+            project={this.project}
+            activeSessionId={this.mergeSessionId}
+            onMergeClosed={() => this.closeMergeCenter()}
+            onApplyMerged={(event: CustomEvent<{ snapshot: unknown }>) => this.applyMergedSnapshot(event)}
+          />
         </ion-app>
       </Host>
     );
